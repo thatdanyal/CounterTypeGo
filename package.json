@@ -1,0 +1,29 @@
+{
+  "name": "glowtype",
+  "version": "1.0.0",
+  "description": "Monkeytype-style typing test with a CT Defense mode and per-key keyboard LED guidance (RK R65)",
+  "main": "main.js",
+  "author": "thatdanyal",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable",
+    "web": "node dev-server.js"
+  },
+  "build": {
+    "appId": "dev.thatdanyal.glowtype",
+    "productName": "GlowType",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.3.0"
+  }
+}

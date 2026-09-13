@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ws://127.0.0.1:* ws://localhost:*; img-src 'self' data:;">
+  <title>GlowType</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand" id="brand" title="Restart">
+      <span class="logo">⌨</span><span class="name">glow<b>type</b></span>
+    </div>
+    <div class="top-right">
+      <div class="kb-status" id="kbStatus" title="Keyboard LED bridge"><span class="dot"></span><span class="label">keyboard</span></div>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <nav class="config" id="config">
+    <div class="group" id="groupToggles">
+      <button data-toggle="punctuation">@ punctuation</button>
+      <button data-toggle="numbers"># numbers</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group" id="groupMode">
+      <button data-mode="time">⏱ time</button>
+      <button data-mode="words">A words</button>
+      <button data-mode="ct">☠ ct defense</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group" id="groupTime">
+      <button data-time="15">15</button>
+      <button data-time="30">30</button>
+      <button data-time="60">60</button>
+      <button data-time="120">120</button>
+    </div>
+    <div class="group" id="groupWords">
+      <button data-words="10">10</button>
+      <button data-words="25">25</button>
+      <button data-words="50">50</button>
+      <button data-words="100">100</button>
+    </div>
+    <div class="group" id="groupCt">
+      <button data-ct="easy">easy</button>
+      <button data-ct="normal">normal</button>
+      <button data-ct="hard">hard</button>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- typing test -->
+    <section id="testView" class="view">
+      <div class="live" id="live"><span id="liveLeft">0</span><span class="live-wpm" id="liveWpm"></span></div>
+      <div class="words-wrap" id="wordsWrap">
+        <div class="words" id="words"></div>
+        <div class="caret" id="caret"></div>
+      </div>
+      <div class="focus-hint hidden" id="focusHint">click here or press any key to focus</div>
+      <div class="hint">
+        <span><kbd>tab</kbd> restart</span>
+        <span><kbd>ctrl</kbd> + <kbd>backspace</kbd> delete word</span>
+      </div>
+    </section>
+
+    <!-- CT defense -->
+    <section id="ctView" class="view hidden">
+      <canvas id="ctCanvas"></canvas>
+      <div class="ct-overlay" id="ctOverlay">
+        <div class="ct-card">
+          <h2>CT Defense</h2>
+          <p>Counter-terrorists close in from every side. Each one carries a word — type it to drop them
+            before they reach you. The one outlined in <span class="g">green</span> is next.</p>
+          <p class="sub">press any key to start · <kbd>tab</kbd> restart · <kbd>backspace</kbd> fixes a typo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- results -->
+    <section id="resultView" class="view hidden">
+      <div class="result-grid">
+        <div class="result-main">
+          <div class="stat big"><div class="k">wpm</div><div class="v" id="rWpm">0</div></div>
+          <div class="stat big"><div class="k">acc</div><div class="v" id="rAcc">0%</div></div>
+        </div>
+        <div class="result-chart"><canvas id="chart" height="220"></canvas></div>
+        <div class="result-row">
+          <div class="stat"><div class="k">test type</div><div class="v small" id="rType"></div></div>
+          <div class="stat"><div class="k">raw</div><div class="v" id="rRaw"></div></div>
+          <div class="stat"><div class="k">characters</div><div class="v" id="rChars" title="correct / incorrect / extra / missed"></div></div>
+          <div class="stat"><div class="k">consistency</div><div class="v" id="rCons"></div></div>
+          <div class="stat"><div class="k">time</div><div class="v" id="rTime"></div></div>
+          <div class="stat"><div class="k">best</div><div class="v" id="rBest"></div></div>
+        </div>
+        <div class="result-extra hidden" id="rCtExtra"></div>
+        <div class="result-actions">
+          <button class="btn" id="nextBtn">next test <kbd>tab</kbd></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>lights: run <code>rk-r65-leds</code> bridge · next key glows on your keyboard</span>
+    <span><a href="https://github.com/thatdanyal/glowtype" target="_blank" rel="noreferrer">github</a> · v1.0.0</span>
+  </footer>
+
+  <!-- settings -->
+  <aside class="settings hidden" id="settings">
+    <div class="settings-head"><h3>settings</h3><button class="icon-btn" id="settingsClose">✕</button></div>
+    <label class="row"><span>keyboard lights</span><input type="checkbox" id="sKb"></label>
+    <label class="row"><span>next-key colour</span>
+      <select id="sColor">
+        <option>green</option><option>cyan</option><option>blue</option><option>purple</option>
+        <option>magenta</option><option>red</option><option>orange</option><option>yellow</option><option>white</option>
+      </select>
+    </label>
+    <label class="row"><span>bridge url</span><input type="text" id="sUrl" spellcheck="false"></label>
+    <label class="row"><span>smooth caret</span><input type="checkbox" id="sCaret"></label>
+    <label class="row"><span>font size</span><input type="range" id="sFont" min="20" max="44" step="2"></label>
+    <div class="row"><span>history</span><button class="btn small" id="sClear">clear</button></div>
+    <p class="note">Keyboard lights need the <code>rk-r65-leds</code> bridge running (<code>npm start</code> in that folder). Status dot up top turns green when it's driving the board.</p>
+  </aside>
+
+  <script src="words.js"></script>
+  <script src="keyboard-link.js"></script>
+  <script src="ctmode.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
