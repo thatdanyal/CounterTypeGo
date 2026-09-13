@@ -1,5 +1,5 @@
 {
-  "name": "glowtype",
+  "name": "countertypego",
   "version": "1.0.0",
   "description": "Monkeytype-style typing test with a CT Defense mode and per-key keyboard LED guidance (RK R65)",
   "main": "main.js",
@@ -12,8 +12,8 @@
     "web": "node dev-server.js"
   },
   "build": {
-    "appId": "dev.thatdanyal.glowtype",
-    "productName": "GlowType",
+    "appId": "dev.thatdanyal.countertypego",
+    "productName": "Counter Type Go",
     "files": [
       "main.js",
       "preload.js",

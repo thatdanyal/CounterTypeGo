@@ -1,4 +1,4 @@
-# GlowType
+# Counter Type Go
 
 A monkeytype-style typing test as a desktop app, with two twists:
 

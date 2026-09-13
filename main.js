@@ -9,7 +9,7 @@ function createWindow() {
     minHeight: 600,
     backgroundColor: '#111318',
     autoHideMenuBar: true,
-    title: 'GlowType',
+    title: 'Counter Type Go',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

@@ -1,4 +1,4 @@
-/* GlowType - main renderer script. Vanilla JS, no build step. */
+/* Counter Type Go - main renderer script. Vanilla JS, no build step. */
 (() => {
   const $ = id => document.getElementById(id);
   const store = {
