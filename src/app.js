@@ -215,7 +215,9 @@
         for (let i = 0; i < 30; i++) test.words.push(makeWord(test.words[test.words.length - 1]));
         renderWords();
       }
-      updateWord(test.wi); scrollToActive(); positionCaret(); announceNext();
+      updateWord(test.wi); scrollToActive(); positionCaret();
+      if (t === w || t.length >= w.length) announceNext();
+      else kb.error(w[t.length], nextExpectedChar());   // space too early: flash the letter you skipped
       return;
     }
     if (t.length >= w.length + 12) return;            // cap runaway extra letters
@@ -225,7 +227,8 @@
     updateWord(test.wi); positionCaret();
     caretEl.classList.add('typing'); clearTimeout(test.caretT); test.caretT = setTimeout(() => caretEl.classList.remove('typing'), 700);
     if (config.mode === 'words' && test.wi === test.words.length - 1 && test.typed[test.wi] === w) return finishTest();
-    announceNext();
+    if (correct) announceNext();
+    else kb.error(t.length < w.length ? w[t.length] : 'backspace', nextExpectedChar());   // flash the key you should have hit
   }
 
   // ------------------------------------------------------------------ results
@@ -280,6 +283,7 @@
       words: () => makeWord(),
       difficulty: config.ct,
       onNextChar: ch => { if (view === 'ct') kb.next(ch); },
+      onError: ch => { if (view === 'ct') kb.error(ch, ch); },
       onHud: h => { liveLeft.textContent = ''; },
       onEnd: r => {
         ctOverlay.classList.remove('hidden');

@@ -58,10 +58,37 @@ window.KeyboardLink = class KeyboardLink {
 
   /** Light the keys for the next character to type (null/undefined = nothing to type). */
   next(ch, force = false) {
+    clearTimeout(this._errT);   // typing on through a red flash cancels it
     if (!force && ch === this.lastChar) return;
     this.lastChar = ch;
     if (ch == null) this._send({ op: 'clear' });
     else this._send({ op: 'char', char: ch, color: this.color, modColor: this.modColor });
+  }
+
+  /**
+   * Wrong key pressed: flash the key that *should* have been pressed red, then move on to
+   * `nextCh` in the normal colour.
+   */
+  error(expectedCh, nextCh, ms = 260) {
+    clearTimeout(this._errT);
+    const keys = KeyboardLink.keysFor(expectedCh);
+    if (keys.length) this.highlight(keys.map(k => [k, 'red']));
+    this.lastChar = undefined;
+    this._errT = setTimeout(() => this.next(nextCh, true), ms);
+  }
+
+  // mirror of the bridge's keysForChar, so the red flash lands on the same physical keys
+  static keysFor(ch) {
+    if (ch == null) return [];
+    if (ch === ' ') return ['space'];
+    if (ch === '\n') return ['enter'];
+    if (ch === '`') return ['fn', 'esc'];
+    if (ch === '~') return ['fn', 'shift', 'esc'];
+    const shifted = { '!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9', ')': '0', '_': '-', '+': '=', '{': '[', '}': ']', '|': '\\', ':': ';', '"': "'", '<': ',', '>': '.', '?': '/' };
+    if (shifted[ch]) return ['shift', shifted[ch]];
+    const lower = ch.toLowerCase();
+    if (ch !== lower) return ['shift', lower];
+    return [ch];
   }
 
   /** Light an explicit set of keys, e.g. [['enter','yellow']]. */

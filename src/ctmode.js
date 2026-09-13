@@ -8,6 +8,7 @@ window.CTDefense = class CTDefense {
     this.ctx = canvas.getContext('2d');
     this.words = opts.words;                 // () => string
     this.onNextChar = opts.onNextChar || (() => {});
+    this.onError = opts.onError || (() => {});
     this.onEnd = opts.onEnd || (() => {});
     this.onHud = opts.onHud || (() => {});
     this.setDifficulty(opts.difficulty || 'normal');
@@ -121,6 +122,8 @@ window.CTDefense = class CTDefense {
       if (t.typed >= t.word.length) this.kill(t);
     } else {
       this.errors++; this.shake = 1; t.shakeT = 1;
+      this.onError(t.word[t.typed]);   // wrong key: the expected one flashes red on the keyboard
+      return true;
     }
     this._announceTarget();
     return true;
